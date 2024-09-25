@@ -1,5 +1,5 @@
 import Modules from "../Modules";
-import CourseStatus from ".";
+import CourseStatus from "./status";
 import Assignments from "../Assignments";
 export default function Home() {
   return (
