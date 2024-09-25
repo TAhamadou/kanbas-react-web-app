@@ -1,6 +1,6 @@
 import Lab1 from "./Lab1";
 import { Route, Routes, Navigate } from "react-router";
-import TOC from ".";
+import TQC from ".";
 import Lab2 from "./Lab2";
 import Lab3 from "./Lab3";
 export default function Labs() {
@@ -8,7 +8,7 @@ export default function Labs() {
     <div id="wd-labs">
       <h1>Labs</h1>
       <Lab1 />
-      <TOC />
+      <TQC />
       <Routes>
         <Route path="/" element={<Navigate to="Lab1" />} />
         <Route path="Lab1" element={<Lab1 />} />
