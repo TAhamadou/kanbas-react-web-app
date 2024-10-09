@@ -1,0 +1,124 @@
+/* Global Styles */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body * {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@media (min-width: 768px) {
+  #wd-kanbas .wd-main-content-offset {
+      padding-left: 140px !important;
+  }
+}
+
+/* List Group Styles */
+.list-group.wd > .list-group-item.active {
+  color: black;
+  background-color: white;
+  border-left: 3px solid black !important;
+}
+
+.list-group-item {
+  --bs-list-group-border-color: gray;
+}
+
+.wd-lesson {
+  border-left: 3px solid green !important;
+}
+
+/* Button Styles */
+.btn-secondary {
+  --bs-btn-color: #000 !important;
+  --bs-btn-bg: #c7cdd1 !important;
+  --bs-btn-border-color: #c7cdd1 !important;
+  --bs-btn-hover-color: #fff !important;
+}
+
+.bg-secondary {
+  --bs-secondary-rgb: 199, 205, 209;
+}
+
+/* Assignments Specific Styles */
+.wd-assignments {
+  margin-top: 20px;
+}
+
+.wd-assignment-search .input-group-text {
+  background-color: white;
+  border-right: none;
+}
+
+.wd-assignment-search .form-control {
+  border-left: none;
+}
+
+.wd-assignment-search .form-control:focus {
+  box-shadow: none;
+  border-color: #ced4da;
+}
+
+.wd-assignments-header {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-bottom: none;
+  padding: 10px 15px;
+}
+
+.wd-assignments-header .total-percentage {
+  font-size: 0.9em;
+  color: #6c757d;
+}
+
+.wd-assignment-item {
+  border-bottom: 1px solid #dee2e6;
+  padding: 15px;
+  background-color: white;
+}
+
+.wd-assignment-item .assignment-title {
+  color: #d9534f;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.wd-assignment-item .assignment-info {
+  font-size: 0.85em;
+  color: #6c757d;
+  margin-top: 5px;
+  background-color: transparent !important; /* Ensure no background color */
+}
+
+.wd-assignment-item .assignment-controls {
+  float: right;
+}
+
+.wd-assignment-item .assignment-controls .btn {
+  padding: 0;
+  background: none;
+  border: none;
+  color: #6c757d;
+}
+
+.wd-assignment-item .assignment-controls .btn:hover {
+  color: #495057;
+}
+
+.btn-add-group {
+  background-color: var(--bs-secondary-rgb, #f8f9fa);
+  border-color: #dee2e6;
+  color: #212529;
+}
+
+.btn-add-assignment {
+  background-color: #d9534f;
+  border-color: #d9534f;
+  color: white;
+}
+
+.btn-add-assignment:hover {
+  background-color: #c9302c;
+  border-color: #ac2925;
+}
