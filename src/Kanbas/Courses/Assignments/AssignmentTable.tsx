@@ -1,34 +1,13 @@
 import Assignment from "./Assignment";
 import { AssignmentsHeader } from "./AssignmentHeader";
+import * as db from "../../Database";
+import { useParams } from "react-router";
 
-const assignmentsData = [
-    {
-        title: "A1 - ENV + HTML",
-        modules: "Multiple Modules",
-        availableDate: "May 6 at 12:00am",
-        dueDate: "May 13 at 11:59pm",
-        points: "100",
-        _id: "A1"
-    },
-    {
-        title: "A2 - CSS + BOOTSTRAP",
-        modules: "Multiple Modules",
-        availableDate: "May 13 at 12:00am",
-        dueDate: "May 20 at 11:59pm",
-        points: "100",
-        _id: "A2"
-    },
-    {
-        title: "A3 - JAVASCRIPT + REACT",
-        modules: "Multiple Modules",
-        availableDate: "May 20 at 12:00am",
-        dueDate: "May 27 at 11:59pm",
-        points: "100",
-        _id: "A3"
-    }
-];
 
 export default function AssigmentTable() {
+    const { cid } = useParams();
+    const assignmentData = db.assignments
+        .filter((assignment) => assignment.course === cid)
     return (
         <div>
             <div className="row mb-3 align-items-center">
@@ -43,9 +22,10 @@ export default function AssigmentTable() {
             <ul id="wd-assignments" className="list-group rounded-0">
                 <li className="wd-module list-group-item p-0 mb-5 fs-5 border-gray">
                     <ul className="wd-assignment-list list-group rounded-0">
-                        {assignmentsData.map((assignment) => (
-                            <Assignment key={assignment._id} {...assignment} />
-                        ))}
+                        {assignmentData
+                            .map((assignment) => (
+                                <Assignment key={assignment._id} {...assignment} />
+                            ))}
                     </ul>
                 </li>
             </ul>

@@ -1,11 +1,17 @@
 import React from 'react';
+import * as db from "../../Database";
+import { useParams } from "react-router";
+import { Link } from 'react-router-dom';
 
 export default function AssignmentEditor() {
+    const { cid, assignmentId } = useParams();
+    const assignment = db.assignments
+        .find((assignment) => assignment.course === cid && assignment._id === assignmentId)
     return (
         <div className="container-fluid mt-4">
-            <h2>Assignment Name</h2>
-            <input className="form-control mb-3" id="wd-name" value="A?" />
-            
+            <h2>{assignment && assignment.title}</h2>
+            <input className="form-control mb-3" id="wd-name" value={assignment?._id} />
+
             <div className="mb-3">
                 <label htmlFor="wd-description" className="form-label">Assignment Description</label>
                 <textarea className="form-control" id="wd-description" rows={5}>
@@ -19,14 +25,14 @@ export default function AssignmentEditor() {
                     The Kanbas application should include a link to navigate back to the landing page.
                 </textarea>
             </div>
-            
+
             <div className="row mb-3">
                 <div className="col-md-3">
                     <label htmlFor="wd-points" className="form-label">Points</label>
                     <input className="form-control" id="wd-points" type="number" value={100} />
                 </div>
             </div>
-            
+
             <div className="row mb-3">
                 <div className="col-md-3">
                     <label htmlFor="wd-group" className="form-label">Assignment Group</label>
@@ -35,7 +41,7 @@ export default function AssignmentEditor() {
                     </select>
                 </div>
             </div>
-            
+
             <div className="row mb-3">
                 <div className="col-md-3">
                     <label htmlFor="wd-display-grade-as" className="form-label">Display Grade as</label>
@@ -44,7 +50,7 @@ export default function AssignmentEditor() {
                     </select>
                 </div>
             </div>
-            
+
             <div className="row mb-3">
                 <div className="col-md-3">
                     <label htmlFor="wd-submission-type" className="form-label">Submission Type</label>
@@ -53,7 +59,7 @@ export default function AssignmentEditor() {
                     </select>
                 </div>
             </div>
-            
+
             <div className="mb-3">
                 <label className="form-label">Online Entry Options</label>
                 <div className="form-check">
@@ -77,21 +83,21 @@ export default function AssignmentEditor() {
                     <label className="form-check-label" htmlFor="wd-file-upload">File Uploads</label>
                 </div>
             </div>
-            
+
             <div className="row mb-3">
                 <div className="col-md-3">
                     <label htmlFor="wd-assign-to" className="form-label">Assign</label>
                     <input className="form-control" id="wd-assign-to" value="Everyone" />
                 </div>
             </div>
-            
+
             <div className="row mb-3">
                 <div className="col-md-3">
                     <label htmlFor="wd-due-date" className="form-label">Due</label>
                     <input className="form-control" id="wd-due-date" type="datetime-local" value="2024-05-13T23:59" />
                 </div>
             </div>
-            
+
             <div className="row mb-3">
                 <div className="col-md-3">
                     <label htmlFor="wd-available-from" className="form-label">Available from</label>
@@ -102,10 +108,20 @@ export default function AssignmentEditor() {
                     <input className="form-control" id="wd-available-until" type="datetime-local" value="2024-05-20T23:59" />
                 </div>
             </div>
-            
+
             <div className="mt-4">
-                <button className="btn btn-light me-2">Cancel</button>
-                <button className="btn btn-danger">Save</button>
+                <Link 
+                    to={`/Kanbas/Courses/${cid}/Assignments`}
+                    className="btn btn-light me-2"
+                >
+                    Cancel
+                </Link>
+                <Link 
+                    to={`/Kanbas/Courses/${cid}/Assignments`}
+                    className="btn btn-danger"
+                >
+                    Save
+                </Link>
             </div>
         </div>
     );
