@@ -122,3 +122,12 @@ body * {
   background-color: #c9302c;
   border-color: #ac2925;
 }
+
+.card-text {
+  background-color: transparent !important;
+}
+
+.wd-dashboard-course-title.card-text {
+  background-color: transparent !important;
+  color: #333;
+}
