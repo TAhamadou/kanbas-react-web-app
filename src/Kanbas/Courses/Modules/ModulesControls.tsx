@@ -2,6 +2,7 @@
 import { FaPlus } from "react-icons/fa6";
 import GreenCheckmark from "./GreenCheckmark";
 import ModuleEditor from "./ModuleEditor";
+import { useIsFaculty } from "../../Account/RoleCheck";
 
 export default function ModulesControls({ 
   moduleName, 
@@ -12,6 +13,12 @@ export default function ModulesControls({
   setModuleName: (name: string) => void;
   addModule: () => void;
 }) {
+  const isFaculty = useIsFaculty();
+
+  if (!isFaculty) {
+    return null;
+  }
+
   return (
     <div id="wd-modules-controls" className="text-nowrap float-end">
       <button 

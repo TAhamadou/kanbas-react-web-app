@@ -7,8 +7,15 @@ import { BsFillBellFill } from "react-icons/bs";
 import { FaChartBar } from "react-icons/fa";
 import { IoMdCopy } from "react-icons/io";
 import { VscTarget } from "react-icons/vsc";
+import { useIsFaculty } from "../../Account/RoleCheck";
 
 export default function CourseStatus() {
+  const isFaculty = useIsFaculty();
+
+  if (!isFaculty) {
+    return null;
+  }
+
   return (
     <div id="wd-course-status" style={{ width: "300px" }}>
       <h2>Course Status</h2>

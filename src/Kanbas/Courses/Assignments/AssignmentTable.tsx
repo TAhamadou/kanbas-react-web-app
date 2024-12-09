@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { deleteAssignment } from "./reducer";
 import { AssignmentsHeader } from "./AssignmentHeader";
 import Assignment from "./Assignment";
+import { useIsFaculty } from "../../Account/RoleCheck";
 
 export default function AssignmentTable() {
   const { cid } = useParams();
@@ -12,6 +13,7 @@ export default function AssignmentTable() {
       (assignment: any) => assignment.course === cid
     )
   );
+  const isFaculty = useIsFaculty();
 
   const handleDelete = (assignmentId: string) => {
     if (window.confirm("Are you sure you want to delete this assignment?")) {
@@ -25,14 +27,15 @@ export default function AssignmentTable() {
         <div className="col">
           <AssignmentsHeader />
         </div>
-        <div className="col-auto">
-          <Link 
-            to={`/Kanbas/Courses/${cid}/Assignments/new`}
-            className="btn btn-danger"
-          >
-            + Assignment
-          </Link>
-        </div>
+        
+      {isFaculty ? (<div className="col-auto">
+        <Link 
+          to={`/Kanbas/Courses/${cid}/Assignments/new`}
+          className="btn btn-danger"
+        >
+          + Assignment
+        </Link>
+      </div>): (<></>)}
       </div>
 
       <ul id="wd-assignments" className="list-group rounded-0">

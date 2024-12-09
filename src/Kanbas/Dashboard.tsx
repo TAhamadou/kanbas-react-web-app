@@ -1,8 +1,8 @@
-/* eslint-disable jsx-a11y/alt-text */
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { enroll, unenroll } from "./Enrollments/reducer";
+import { useIsFaculty } from "./Account/RoleCheck";
 
 export default function Dashboard({ 
   courses, 
@@ -19,6 +19,7 @@ export default function Dashboard({
   deleteCourse: (courseId: string) => void;
   updateCourse: () => void;
 }) {
+  const isFaculty = useIsFaculty();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showAllCourses, setShowAllCourses] = useState(false);
@@ -48,6 +49,17 @@ export default function Dashboard({
     navigate(`/Kanbas/Courses/${courseId}/Home`);
   };
 
+  const handleAddNewCourse = () => {
+    // Call the original addNewCourse function
+    addNewCourse();
+    
+    // Get the new course ID (it's set to new Date().getTime().toString() in index.tsx)
+    const newCourseId = new Date().getTime().toString();
+    
+    // Automatically enroll the faculty member
+    dispatch(enroll({ userId: currentUser._id, courseId: newCourseId }));
+  };
+
   const displayedCourses = showAllCourses 
     ? courses 
     : courses.filter((course) => isEnrolled(course._id));
@@ -56,14 +68,14 @@ export default function Dashboard({
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1>
       <hr />
-      {currentUser?.role === "FACULTY" ? (
+      {isFaculty ? (
         <>
           <h5>
             New Course
             <button 
               className="btn btn-primary float-end"
               id="wd-add-new-course-click"
-              onClick={addNewCourse}
+              onClick={handleAddNewCourse}
             >
               Add
             </button>
@@ -111,7 +123,7 @@ export default function Dashboard({
                 <div className="card-body">
                   <h5 className="wd-dashboard-course-title card-title">{course.name}</h5>
                   <p className="wd-dashboard-course-title card-text overflow-y-hidden" style={{ maxHeight: 100 }}>{course.description}</p>
-                  {currentUser?.role === "FACULTY" ? (
+                  {isFaculty ? (
                     <>
                       <button
                         onClick={(event) => {

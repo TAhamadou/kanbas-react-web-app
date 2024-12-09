@@ -4,7 +4,7 @@ export default function ModuleEditor({
   dialogTitle, 
   moduleName, 
   setModuleName, 
-  addModule 
+  addModule,
 }: {
   dialogTitle: string;
   moduleName: string;

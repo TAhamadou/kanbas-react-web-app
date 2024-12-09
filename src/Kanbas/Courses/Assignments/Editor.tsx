@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { addAssignment, updateAssignment } from "./reducer";
 import { Link } from "react-router-dom";
 
-export default function AssignmentEditor() {
+export default function AssignmentEditor({isUpdate} : {isUpdate: boolean}) {
   const { cid, assignmentId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -17,20 +17,36 @@ export default function AssignmentEditor() {
   const [assignmentData, setAssignmentData] = React.useState(
     assignment || {
       title: "",
-      description: "The assignment is available online\nSubmit a link to the landing page.",
+      description: "New Assignment Description",
       points: 100,
       dueDate: "2024-05-13T23:59",
       availableFromDate: "2024-05-06T00:00",
       availableUntilDate: "2024-05-20T23:59",
-      course: cid,
+      course: cid, // Ensure course ID is set
     }
   );
 
   const handleSave = () => {
-    if (assignmentId) {
+    // Validate required fields
+    if (!assignmentData.title || !assignmentData.course) {
+      alert("Title and course are required!");
+      return;
+    }
+    
+    if (!isUpdate) {
+      // For updating existing assignment
       dispatch(updateAssignment({ ...assignmentData, _id: assignmentId }));
     } else {
-      dispatch(addAssignment(assignmentData));
+      // For new assignment, make sure to pass all required fields
+      dispatch(addAssignment({
+        title: assignmentData.title,
+        course: assignmentData.course,
+        description: assignmentData.description,
+        points: assignmentData.points,
+        dueDate: assignmentData.dueDate,
+        availableFromDate: assignmentData.availableFromDate,
+        availableUntilDate: assignmentData.availableUntilDate
+      }));
     }
     navigate(`/Kanbas/Courses/${cid}/Assignments`);
   };
@@ -45,6 +61,7 @@ export default function AssignmentEditor() {
           id="wd-assignment-name"
           value={assignmentData.title}
           onChange={(e) => setAssignmentData({ ...assignmentData, title: e.target.value })}
+          required
         />
       </div>
 
@@ -93,7 +110,10 @@ export default function AssignmentEditor() {
             id="wd-available-from"
             type="datetime-local"
             value={assignmentData.availableFromDate}
-            onChange={(e) => setAssignmentData({ ...assignmentData, availableFromDate: e.target.value })}
+            onChange={(e) => setAssignmentData({ 
+              ...assignmentData, 
+              availableFromDate: e.target.value 
+            })}
           />
         </div>
         <div className="col-md-3">
@@ -103,7 +123,10 @@ export default function AssignmentEditor() {
             id="wd-available-until"
             type="datetime-local"
             value={assignmentData.availableUntilDate}
-            onChange={(e) => setAssignmentData({ ...assignmentData, availableUntilDate: e.target.value })}
+            onChange={(e) => setAssignmentData({ 
+              ...assignmentData, 
+              availableUntilDate: e.target.value 
+            })}
           />
         </div>
       </div>
