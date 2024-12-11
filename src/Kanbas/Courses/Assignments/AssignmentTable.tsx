@@ -1,9 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useParams, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteAssignment } from "./reducer";
+import { deleteAssignment, setAssignments } from "./reducer";
 import { AssignmentsHeader } from "./AssignmentHeader";
 import Assignment from "./Assignment";
 import { useIsFaculty } from "../../Account/RoleCheck";
+import { useEffect } from "react";
+import * as client from "./client";
 
 export default function AssignmentTable() {
   const { cid } = useParams();
@@ -15,9 +18,27 @@ export default function AssignmentTable() {
   );
   const isFaculty = useIsFaculty();
 
-  const handleDelete = (assignmentId: string) => {
+  const fetchAssignments = async () => {
+    try {
+      const assignments = await client.findAssignmentsForCourse(cid as string);
+      dispatch(setAssignments(assignments));
+    } catch (error) {
+      console.error("Error fetching assignments:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAssignments();
+  }, [cid]);
+
+  const handleDelete = async (assignmentId: string) => {
     if (window.confirm("Are you sure you want to delete this assignment?")) {
-      dispatch(deleteAssignment(assignmentId));
+      try {
+        await client.deleteAssignment(assignmentId);
+        dispatch(deleteAssignment(assignmentId));
+      } catch (error) {
+        console.error("Error deleting assignment:", error);
+      }
     }
   };
 
@@ -28,14 +49,16 @@ export default function AssignmentTable() {
           <AssignmentsHeader />
         </div>
         
-      {isFaculty ? (<div className="col-auto">
-        <Link 
-          to={`/Kanbas/Courses/${cid}/Assignments/new`}
-          className="btn btn-danger"
-        >
-          + Assignment
-        </Link>
-      </div>): (<></>)}
+        {isFaculty && (
+          <div className="col-auto">
+            <Link 
+              to={`/Kanbas/Courses/${cid}/Assignments/new`}
+              className="btn btn-danger"
+            >
+              + Assignment
+            </Link>
+          </div>
+        )}
       </div>
 
       <ul id="wd-assignments" className="list-group rounded-0">

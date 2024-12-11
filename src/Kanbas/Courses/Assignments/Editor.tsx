@@ -3,9 +3,12 @@ import { useParams, useNavigate } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { addAssignment, updateAssignment } from "./reducer";
 import { Link } from "react-router-dom";
+import * as client from "./client";
 
-export default function AssignmentEditor({isUpdate} : {isUpdate: boolean}) {
+export default function AssignmentEditor({ isUpdate }: { isUpdate: boolean }) {
+  console.log(isUpdate)
   const { cid, assignmentId } = useParams();
+  const update = isUpdate;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const assignment = useSelector((state: any) => 
@@ -22,33 +25,28 @@ export default function AssignmentEditor({isUpdate} : {isUpdate: boolean}) {
       dueDate: "2024-05-13T23:59",
       availableFromDate: "2024-05-06T00:00",
       availableUntilDate: "2024-05-20T23:59",
-      course: cid, // Ensure course ID is set
+      course: cid,
     }
   );
 
-  const handleSave = () => {
-    // Validate required fields
+  const handleSave = async () => {
     if (!assignmentData.title || !assignmentData.course) {
       alert("Title and course are required!");
       return;
     }
     
-    if (!isUpdate) {
-      // For updating existing assignment
-      dispatch(updateAssignment({ ...assignmentData, _id: assignmentId }));
-    } else {
-      // For new assignment, make sure to pass all required fields
-      dispatch(addAssignment({
-        title: assignmentData.title,
-        course: assignmentData.course,
-        description: assignmentData.description,
-        points: assignmentData.points,
-        dueDate: assignmentData.dueDate,
-        availableFromDate: assignmentData.availableFromDate,
-        availableUntilDate: assignmentData.availableUntilDate
-      }));
+    try {
+      if (!update) {
+        const newAssignment = await client.createAssignment(cid as string, assignmentData);
+        dispatch(addAssignment(newAssignment));
+      } else {
+        const updatedAssignment = await client.updateAssignment(assignmentData);
+        dispatch(updateAssignment(updatedAssignment));
+      }
+      navigate(`/Kanbas/Courses/${cid}/Assignments`);
+    } catch (error) {
+      console.error("Error saving assignment:", error);
     }
-    navigate(`/Kanbas/Courses/${cid}/Assignments`);
   };
 
   return (
@@ -84,7 +82,10 @@ export default function AssignmentEditor({isUpdate} : {isUpdate: boolean}) {
             id="wd-points"
             type="number"
             value={assignmentData.points}
-            onChange={(e) => setAssignmentData({ ...assignmentData, points: parseInt(e.target.value) })}
+            onChange={(e) => setAssignmentData({ 
+              ...assignmentData, 
+              points: parseInt(e.target.value) 
+            })}
           />
         </div>
       </div>
@@ -97,7 +98,10 @@ export default function AssignmentEditor({isUpdate} : {isUpdate: boolean}) {
             id="wd-due-date"
             type="datetime-local"
             value={assignmentData.dueDate}
-            onChange={(e) => setAssignmentData({ ...assignmentData, dueDate: e.target.value })}
+            onChange={(e) => setAssignmentData({ 
+              ...assignmentData, 
+              dueDate: e.target.value 
+            })}
           />
         </div>
       </div>

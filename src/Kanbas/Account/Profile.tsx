@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentUser } from "./reducer";
+import * as client from "./client";
 
 export default function Profile() {
   const [profile, setProfile] = useState<any>({});
@@ -16,7 +17,13 @@ export default function Profile() {
     setProfile(currentUser);
   };
 
-  const signout = () => {
+  const updateProfile = async () => {
+    const updatedProfile = await client.updateUser(profile);
+    dispatch(setCurrentUser(updatedProfile));
+  };
+
+  const signout = async () => {
+    await client.signout();
     dispatch(setCurrentUser(null));
     navigate("/Kanbas/Account/Signin");
   };
@@ -31,39 +38,39 @@ export default function Profile() {
       {profile && (
         <div>
           <input
-            defaultValue={profile.username}
+            value={profile.username}
             id="wd-username"
             className="form-control mb-2"
             onChange={(e) => setProfile({ ...profile, username: e.target.value })}
           />
           <input
-            defaultValue={profile.password}
+            value={profile.password}
             id="wd-password"
             className="form-control mb-2"
             type="password"
             onChange={(e) => setProfile({ ...profile, password: e.target.value })}
           />
           <input
-            defaultValue={profile.firstName}
+            value={profile.firstName}
             id="wd-firstname"
             className="form-control mb-2"
             onChange={(e) => setProfile({ ...profile, firstName: e.target.value })}
           />
           <input
-            defaultValue={profile.lastName}
+            value={profile.lastName}
             id="wd-lastname"
             className="form-control mb-2"
             onChange={(e) => setProfile({ ...profile, lastName: e.target.value })}
           />
           <input
-            defaultValue={profile.dob}
+            value={profile.dob}
             id="wd-dob"
             className="form-control mb-2"
             type="date"
             onChange={(e) => setProfile({ ...profile, dob: e.target.value })}
           />
           <input
-            defaultValue={profile.email}
+            value={profile.email}
             id="wd-email"
             className="form-control mb-2"
             type="email"
@@ -73,13 +80,19 @@ export default function Profile() {
             onChange={(e) => setProfile({ ...profile, role: e.target.value })}
             className="form-control mb-2"
             id="wd-role"
-            defaultValue={profile.role}
+            value={profile.role}
           >
             <option value="USER">User</option>
             <option value="ADMIN">Admin</option>
             <option value="FACULTY">Faculty</option>
             <option value="STUDENT">Student</option>
           </select>
+          <button
+            onClick={updateProfile}
+            className="btn btn-primary w-100 mb-2"
+          >
+            Update
+          </button>
           <button
             onClick={signout}
             className="btn btn-danger w-100 mb-2"
