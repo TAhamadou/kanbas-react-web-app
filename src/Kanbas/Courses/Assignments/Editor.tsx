@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import * as client from "./client";
 
 export default function AssignmentEditor({ isUpdate }: { isUpdate: boolean }) {
-  console.log(isUpdate)
   const { cid, assignmentId } = useParams();
   const update = isUpdate;
   const navigate = useNavigate();

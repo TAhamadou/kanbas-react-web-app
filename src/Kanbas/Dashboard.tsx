@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { enroll, unenroll } from "./Enrollments/reducer";
+import { enroll, unenroll, setEnrollments } from "./Enrollments/reducer";
 import { useIsFaculty } from "./Account/RoleCheck";
+import * as courseClient from "./Courses/client";
+import * as enrollmentClient from "./Enrollments/client";
+import * as userClient from "./Account/client";
 
 export default function Dashboard({ 
   courses, 
@@ -24,8 +27,49 @@ export default function Dashboard({
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showAllCourses, setShowAllCourses] = useState(false);
+  const [allCourses, setAllCourses] = useState<any[]>([]);
+  const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
+
+  // Function to fetch enrolled courses
+  const fetchEnrolledCourses = async () => {
+    try {
+      const myCourses = await userClient.findMyCourses();
+      setEnrolledCourses(myCourses);
+    } catch (error) {
+      console.error('Error fetching enrolled courses:', error);
+    }
+  };
+
+  // Function to fetch enrollments and update Redux state
+  const fetchAndUpdateEnrollments = async () => {
+    try {
+      const userCourses = await userClient.findMyCourses();
+      dispatch(setEnrollments(userCourses.map((course: any) => ({
+        user: currentUser._id,
+        course: course._id,
+        _id: course._id
+      }))));
+      await fetchEnrolledCourses(); // Update enrolled courses after enrollment changes
+    } catch (error) {
+      console.error('Error fetching enrollments:', error);
+    }
+  };
+
+  // Fetch all courses and enrollments when component mounts
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const coursesData = await courseClient.fetchAllCourses();
+        setAllCourses(coursesData);
+        await fetchAndUpdateEnrollments();
+      } catch (error) {
+        console.error('Error fetching initial data:', error);
+      }
+    };
+    fetchInitialData();
+  }, []);
 
   const isEnrolled = (courseId: string) => {
     return enrollments.some(
@@ -35,12 +79,22 @@ export default function Dashboard({
     );
   };
 
-  const handleEnrollClick = (courseId: string) => {
-    dispatch(enroll({ userId: currentUser._id, courseId }));
+  const handleEnrollClick = async (courseId: string) => {
+    try {
+      await enrollmentClient.enroll(currentUser._id, courseId);
+      await fetchAndUpdateEnrollments();
+    } catch (error) {
+      console.error("Error enrolling in course:", error);
+    }
   };
 
-  const handleUnenrollClick = (courseId: string) => {
-    dispatch(unenroll({ userId: currentUser._id, courseId }));
+  const handleUnenrollClick = async (courseId: string) => {
+    try {
+      await enrollmentClient.unenroll(currentUser._id, courseId);
+      await fetchAndUpdateEnrollments();
+    } catch (error) {
+      console.error("Error unenrolling from course:", error);
+    }
   };
 
   const handleCourseClick = (courseId: string) => {
@@ -50,20 +104,14 @@ export default function Dashboard({
     navigate(`/Kanbas/Courses/${courseId}/Home`);
   };
 
-  const handleAddNewCourse = () => {
-    // Call the original addNewCourse function
-    addNewCourse();
-    
-    // Get the new course ID (it's set to new Date().getTime().toString() in index.tsx)
-    const newCourseId = new Date().getTime().toString();
-    
-    // Automatically enroll the faculty member
-    dispatch(enroll({ userId: currentUser._id, courseId: newCourseId }));
+  const handleAddNewCourse = async () => {
+    await addNewCourse();
+    await handleEnrollClick(course._id);
   };
 
   const displayedCourses = showAllCourses 
-    ? courses 
-    : courses.filter((course) => isEnrolled(course._id));
+    ? allCourses 
+    : enrolledCourses;
 
   return (
     <div id="wd-dashboard">

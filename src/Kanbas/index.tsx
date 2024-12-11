@@ -28,8 +28,10 @@ export default function Kanbas() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   const fetchCourses = async () => {
+    console.log("Fetching Courses")
     try {
       const courses = await userClient.findMyCourses();
+      console.log(courses)
       setCourses(courses);
     } catch (error) {
       console.error(error);
@@ -41,12 +43,9 @@ export default function Kanbas() {
   }, [currentUser]);
 
   const addNewCourse = async () => {
-    try {
-      const newCourse = await userClient.createCourse(course);
-      setCourses([...courses, newCourse]);
-    } catch (error) {
-      console.error("Error adding new course:", error);
-    }
+    const newCourse = await userClient.createCourse(course);
+    console.log(newCourse)
+    setCourses([...courses, newCourse]);
   };
 
   const deleteCourse = async (courseId: string) => {
