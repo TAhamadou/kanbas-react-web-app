@@ -13,6 +13,7 @@ import { KanbasState } from "../../store";
 import { useParams, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import * as client from "./client";
+import { useIsFaculty } from "../../Account/RoleCheck";
 
 function QuizList() {
     const { courseId } = useParams();
@@ -67,6 +68,12 @@ function QuizList() {
             return `Not available until ${availableDate.toLocaleDateString()}`;
         }
     };
+
+    const isFaculty = useIsFaculty();
+    
+    if (!isFaculty) {
+    return null;
+    }
 
     return (
         <>
