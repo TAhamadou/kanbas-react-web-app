@@ -1,0 +1,48 @@
+.wd-modules,
+.wd-modules * {
+    border-radius: 0%;
+    border: none;
+    margin: 0px;
+    padding: 0px;
+}
+
+.wd-modules {
+    margin: 5px;
+}
+
+.wd-modules > li {
+    background-color: lightgray;
+    border: 1px solid gray !important;
+    border-left: none !important;
+    margin-bottom: 50px;
+}
+
+.wd-modules > li > div {
+    padding: 6px;
+    border-left: 1px solid gray !important;
+}
+
+.wd-modules > li > ul > li {
+    padding: 5px;
+    border-top: 1px solid gray !important;
+    border-left: 3px solid green;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: bold;
+    /* color: #b62828; */
+    /* margin-bottom: 10px; */
+    border-bottom: 1px solid #c7cdd1;
+    /* min-width: 100vw; */
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+}
+
+.bottom-border {
+    border-bottom: 1px solid #c7cdd1;
+    margin-bottom: 25px;
+    padding-bottom: 25px;
+    border-radius: 0px;
+    /* width: 100%; */
+}
