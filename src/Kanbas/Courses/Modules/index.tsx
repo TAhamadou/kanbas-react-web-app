@@ -10,6 +10,7 @@ import { addModule, deleteModule, updateModule, editModule, setModules } from ".
 import * as coursesClient from "../client";
 import * as modulesClient from "./client";
 
+
 export default function Modules() {
   const { cid } = useParams();
   const [moduleName, setModuleName] = useState("");
@@ -17,6 +18,7 @@ export default function Modules() {
   const dispatch = useDispatch();
 
   const fetchModules = async () => {
+    console.log(`Fetching: /api/courses/${cid}/modules`)
     const modules = await coursesClient.findModulesForCourse(cid as string);
     dispatch(setModules(modules));
   };
