@@ -2,6 +2,7 @@ import { IoEllipsisVertical } from "react-icons/io5";
 import { BsPlus } from "react-icons/bs";
 import { FaTrash, FaPencil } from "react-icons/fa6";
 import GreenCheckmark from "./GreenCheckmark";
+import { useIsFaculty } from "../../Account/RoleCheck";
 
 export default function ModuleControlButtons({ 
   moduleId, 
@@ -11,7 +12,13 @@ export default function ModuleControlButtons({
   moduleId: string;
   deleteModule: (moduleId: string) => void;
   editModule: (moduleId: string) => void;
-}) {
+})
+ {
+  const isFaculty = useIsFaculty();
+  
+    if (!isFaculty) {
+      return null;
+    }
   return (
     <div className="float-end">
       <FaPencil 
